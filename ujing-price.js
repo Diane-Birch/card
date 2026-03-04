@@ -1,24 +1,18 @@
-// u净洗衣机模式价格改成 0.10 元（仅改显示）
 let body = $response.body;
+
+console.log("脚本运行了！原始body长度：" + body.length);  // 在 QX 日志查看
 
 try {
     let obj = JSON.parse(body);
-    
-    if (obj.code === 0 && obj.data && Array.isArray(obj.data)) {
-        obj.data.forEach(program => {
-            if (program.basePrice !== undefined) {
-                program.basePrice = 10;  // 改成 0.10 元（单位：分）
-            }
-            if (program.promotionPrice !== undefined) {
-                program.promotionPrice = 10;  // 如果有促销价也改
-            }
+    if (obj.data && Array.isArray(obj.data)) {
+        obj.data.forEach(item => {
+            if (item.basePrice) item.basePrice = 1;  // 改成 ¥0.01 测试
+            if (item.promotionPrice) item.promotionPrice = 1;
         });
     }
-    
     body = JSON.stringify(obj);
 } catch (e) {
-    console.log("JSON parse error in ujing price script:", e);
-    // 出错就返回原body，避免 App 崩溃
+    console.log("JSON 解析出错: " + e);
 }
 
 $done({ body });
